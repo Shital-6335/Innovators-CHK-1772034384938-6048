@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Artisan Login | Welcome Back</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        /* [Copy the :root and body styles from above for a perfect match] */
+        :root { --primary: #d4af37; --bg: #0f172a; --card: #1e293b; --text: #f8fafc; }
+        body { margin: 0; font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .auth-card { background: var(--card); padding: 40px; border-radius: 20px; width: 100%; max-width: 400px; border: 1px solid rgba(255,255,255,0.1); }
+        h2 { margin: 0 0 10px; color: var(--primary); }
+        .input-group { position: relative; margin-bottom: 25px; }
+        .input-group input { width: 100%; padding: 15px 0 10px; background: transparent; border: none; border-bottom: 2px solid #334155; color: white; outline: none; font-size: 1rem; }
+        .input-group label { position: absolute; top: 15px; left: 0; color: #64748b; transition: 0.3s; pointer-events: none; }
+        .input-group input:focus ~ label, .input-group input:not(:placeholder-shown) ~ label { top: -12px; font-size: 0.8rem; color: var(--primary); }
+        button { width: 100%; padding: 14px; background: var(--primary); border: none; border-radius: 8px; font-weight: 700; cursor: pointer; }
+        .switch { text-align: center; margin-top: 25px; font-size: 0.9rem; color: #94a3b8; }
+        .switch a { color: var(--primary); text-decoration: none; }
+    </style>
+</head>
+<body>
+
+<div class="auth-card">
+    <h2>Welcome Back</h2>
+    <p style="color: #94a3b8; margin-bottom: 30px;">Login to manage your artisan shop.</p>
+    
+    <form action="/login" method="POST">
+        <div class="input-group">
+            <input type="email" name="email" placeholder=" " required>
+            <label>Email Address</label>
+        </div>
+        <div class="input-group">
+            <input type="password" name="password" id="logPass" placeholder=" " required>
+            <label>Password</label>
+            <span style="position:absolute; right:10px; top:15px; cursor:pointer;" onclick="document.getElementById('logPass').type = document.getElementById('logPass').type === 'password' ? 'text' : 'password'">👁️</span>
+        </div>
+        <button type="submit">Sign In</button>
+    </form>
+
+    <div class="switch">
+        New to the marketplace? <a href="/register">Create an account</a>
+    </div>
+</div>
+
+</body>
+</html>

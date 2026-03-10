@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Artisan Dashboard | ArtisanWay</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary-gold: #d4af37; --bg-dark: #0f172a; --card-bg: #1e293b; --sidebar-width: 260px; }
+        body { margin: 0; font-family: 'Inter', sans-serif; background-color: var(--bg-dark); color: #f8fafc; display: flex; }
+        .sidebar { width: var(--sidebar-width); height: 100vh; background: rgba(15, 23, 42, 0.95); border-right: 1px solid rgba(255,255,255,0.05); padding: 30px 20px; position: fixed; display: flex; flex-direction: column; }
+        .sidebar h2 { color: var(--primary-gold); font-family: 'Playfair Display', serif; margin-bottom: 40px; font-size: 24px; }
+        .nav-links { list-style: none; padding: 0; flex-grow: 1; }
+        .nav-links li { margin-bottom: 15px; }
+        .nav-links a { color: #94a3b8; text-decoration: none; display: flex; align-items: center; padding: 12px 15px; border-radius: 10px; transition: 0.3s; }
+        .nav-links a:hover, .nav-links a.active { background: var(--card-bg); color: var(--primary-gold); }
+        .main-content { margin-left: var(--sidebar-width); width: calc(100% - var(--sidebar-width)); padding: 40px; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
+        .header h1 span { color: var(--primary-gold); text-transform: capitalize; }
+        .add-btn { background: var(--primary-gold); color: #000; border: none; padding: 12px 24px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; text-decoration: none; display: inline-block; }
+        .add-btn:hover { background: #fff; transform: translateY(-2px); }
+        
+        .order-process-card { background: var(--card-bg); padding: 20px; border-radius: 12px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid var(--primary-gold); }
+        .status-badge { background: rgba(212, 175, 55, 0.1); color: var(--primary-gold); padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; }
+        
+        .product-gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; margin-top: 20px; }
+        .handcrafted-card { background: var(--card-bg); border-radius: 12px; overflow: hidden; border: 1px solid #334155; transition: 0.3s; }
+        .handcrafted-card:hover { transform: translateY(-5px); border-color: var(--primary-gold); }
+        .image-wrapper img { width: 100%; height: 150px; object-fit: cover; }
+        .product-details { padding: 15px; }
+        .price-tag { color: var(--primary-gold); font-weight: bold; margin: 5px 0; }
+        .card-actions { display: flex; gap: 10px; margin-top: 10px; }
+        
+        .delete-btn { background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid #ef4444; padding: 8px; border-radius: 5px; cursor: pointer; width: 100%; font-weight: 600; transition: 0.3s; }
+        .delete-btn:hover { background: #ef4444; color: white; }
+        
+        select { background: #0f172a; color: white; border: 1px solid #334155; padding: 8px; border-radius: 8px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>ArtisanWay</h2>
+        <ul class="nav-links">
+            <li><a href="/dashboard" class="active">📊 Dashboard</a></li>
+            <li><a href="#products">🏺 My Products</a></li>
+            <li><a href="#orders">📦 Order Process</a></li>
+        </ul>
+        <a href="/logout" style="color: #ef4444; text-decoration: none; font-weight: 600; padding: 15px;">🚪 Logout</a>
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <div>
+                <h1>Namaste, <span>{{ name }}</span>!</h1>
+                <p style="color: #64748b;">Manage your handmade items and active orders.</p>
+            </div>
+            <a href="/add_product" class="add-btn">+ Add New Product</a>
+        </div>
+
+        <div id="orders">
+            <h3 style="color: var(--primary-gold);">Incoming Orders</h3>
+            {% if not orders %}
+                <p style="color: #64748b;">No active orders yet.</p>
+            {% endif %}
+            {% for order in orders %}
+            <div class="order-process-card">
+                <div>
+                    <h4 style="margin: 0;">{{ order.product_name }}</h4>
+                    <small style="color: #94a3b8;">Customer: {{ order.customer_name }}</small>
+                </div>
+                <div class="status-badge">{{ order.status }}</div>
+                <form action="/update_status/{{ order.id }}" method="POST">
+                    <select name="new_status" onchange="this.form.submit()">
+                        <option value="" disabled selected>Update Status</option>
+                        <option value="Packing">📦 Packing</option>
+                        <option value="Shipped">🚚 Shipped</option>
+                        <option value="Delivered">✅ Delivered</option>
+                    </select>
+                </form>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div id="products" style="margin-top: 50px;">
+            <h3 style="color: var(--primary-gold);">My Shop</h3>
+            <div class="product-gallery-grid">
+                {% for product in products %}
+                <div class="handcrafted-card">
+                    <div class="image-wrapper">
+                        <img src="{{ product.image_url }}" alt="Product">
+                    </div>
+                    <div class="product-details">
+                        <h4 style="margin:0;">{{ product.title }}</h4>
+                        <div class="price-tag">₹{{ product.price }}</div>
+                        <div class="card-actions">
+                            <form action="/delete_product/{{ product.id }}" method="POST" style="width: 100%;">
+                                <button type="submit" class="delete-btn" onclick="return confirm('Are you sure you want to remove this masterpiece?')">Remove</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>
